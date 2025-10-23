@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perhaps...</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: #ffe6f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    h1 {
+      color: #ff4d88;
+      font-size: 3em;
+      opacity: 0;
+      animation: fadeIn 2.5s forwards;
+    }
+
+    .hint {
+      position: absolute;
+      bottom: 30px;
+      font-size: 1em;
+      color: #ff80bf;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+  </style>
+</head>
+<body onclick="nextPage()">
+  <h1>Perhaps...</h1>
+  <div class="hint">(Click anywhere)</div>
+
+  <script>
+    function nextPage() {
+      document.body.style.transition = 'opacity 1s';
+      document.body.style.opacity = 0;
+      setTimeout(() => {
+        window.location.href = 'maybe.html';
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Together since...</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffe6f2, #ffb3d9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      color: #ff1a75;
+      text-align: center;
+      overflow: hidden;
+    }
+
+
+    h1 {
+      font-size: 2.8em;
+      margin-bottom: 30px;
+
+      animation: fadeIn 2s ease-in-out;
+      color: #D10000; /* updated red color */
+    }
+
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #counter {
+      font-size: 2em;
+      background: rgba(255,255,255,0.85);
+      padding: 20px 40px;
+      border-radius: 25px;
+      box-shadow: 0 0 20px #ff99cc;
+      margin-top: 20px;
+      animation: glow 2s infinite alternate;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #ff99cc, 0 0 15px #ff66b3; }
+      to { box-shadow: 0 0 25px #ffb3d9, 0 0 40px #ff80bf; }
+    }
+
+    .since {
+      margin-top: 15px;
+      font-size: 1.3em;
+      color: #ec00ad;
+      font-weight: bold;
+    }
+
+    #reset-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: #ffb3d9;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.9em;
+      box-shadow: 0 0 10px #ff99cc;
+      transition: background 0.3s, transform 0.2s;
+      z-index: 2;
+    }
+
+    #reset-btn:hover {
+      background: #ff80bf;
+      transform: scale(1.1);
+    }
+
+    /* Hearts */
+    .heart {
+      position: absolute;
+      color: #ff4da6;
+      font-size: 1em;
+      opacity: 1;
+      pointer-events: none;
+      animation: floatUp 2s forwards;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--x), -80px) scale(1.2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button id="reset-btn">Reset</button>
+
+  <h1>We’ve been together for...</h1>
+  <div id="counter">Loading...</div>
+  <div class="since" id="since"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6aw3LgxHo9kas-CAuQOu8SP_ZWwH3KGU",
+      authDomain: "counting-bf01c.firebaseapp.com",
+      projectId: "counting-bf01c",
+      storageBucket: "counting-bf01c.firebasestorage.app",
+      messagingSenderId: "582984384553",
+      appId: "1:582984384553:web:3457fd604691fde3cf5c38",
+      measurementId: "G-KZ22702NWC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const start = params.get('start');
+    const counterRef = doc(db, "relationship", "startDate");
+
+    // Save new start time if coming from Yes button
+    if (start) {
+      await setDoc(counterRef, { started: start });
+    }
+
+    // Load start time from Firestore
+    const docSnap = await getDoc(counterRef);
+    if (docSnap.exists() && docSnap.data().started) {
+      const startTime = parseInt(docSnap.data().started);
+      startCounter(startTime);
+    } else {
+      document.getElementById("counter").textContent = "No start date found";
+    }
+
+    function startCounter(startTime) {
+      const counter = document.getElementById("counter");
+      const since = document.getElementById("since");
+
+      const startDate = new Date(startTime);
+      const dateString = startDate.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+      since.textContent = `Since ${dateString}`;
+
+      setInterval(() => {
+        const now = Date.now();
+        const diff = now - startTime;
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        counter.textContent = `${days} days, ${hours} hrs, ${minutes} mins, ${seconds} secs`;
+      }, 1000);
+
+      // Heart emission
+      setInterval(() => emitHeart(counter), 800);
+    }
+
+    function emitHeart(counter) {
+      const counterRect = counter.getBoundingClientRect();
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "❤️";
+
+      // Start at random horizontal position inside counter
+      const xOffset = Math.random() * counterRect.width - counterRect.width / 2;
+      heart.style.left = (counterRect.left + counterRect.width / 2) + "px";
+      heart.style.top = (counterRect.top + counterRect.height / 2) + "px";
+      heart.style.setProperty("--x", `${xOffset}px`);
+
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 2000);
+    }
+
+    // Reset button
+    document.getElementById("reset-btn").addEventListener("click", async () => {
+      await setDoc(counterRef, { started: null });
+      alert("Timer reset! Click Yes again to start over 💕");
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>

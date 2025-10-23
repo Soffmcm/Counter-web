@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Adele</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="cover-page">
+  <div class="hearts"></div>
+
+  <div class="content">
+    <h1>Hello beautiful :) </h1>
+    <p>I made something for you...</p>
+    <button id="open-btn">Open it 💌</button>
+  </div>
+
+  <script>
+    document.getElementById("open-btn").addEventListener("click", () => {
+      window.location.href = "wondering.html";
+    });
+
+    // Floating hearts animation
+    const heartsContainer = document.querySelector('.hearts');
+    for (let i = 0; i < 15; i++) {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = 3 + Math.random() * 5 + 's';
+      heartsContainer.appendChild(heart);
+    }
+  </script>
+</body>
+</html>

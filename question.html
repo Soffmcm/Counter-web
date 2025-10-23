@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pretty Please 💌</title>
+  <style>
+    body {
+      background-color: #ffe6f2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ff4d88;
+      font-size: 2.8em;
+      margin-bottom: 50px;
+    }
+
+    .buttons {
+      position: relative;
+    }
+
+    #yes-btn {
+      background-color: #ff4da6;
+      color: white;
+      padding: 15px 40px;
+      font-size: 1.5em;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff99cc;
+      animation: glowPulse 1.5s infinite alternate;
+      transition: transform 0.2s;
+    }
+
+    @keyframes glowPulse {
+      0% { box-shadow: 0 0 15px #ff99cc, 0 0 20px #ff80bf; transform: scale(1); }
+      50% { box-shadow: 0 0 25px #ff99cc, 0 0 30px #ff80bf; transform: scale(1.05); }
+      100% { box-shadow: 0 0 15px #ff99cc, 0 0 20px #ff80bf; transform: scale(1); }
+    }
+
+    #no-btn {
+      position: absolute; /* relative to body */
+      z-index: 10;
+      background-color: #ff80bf;
+      color: white;
+      padding: 5px 15px;
+      font-size: 0.8em;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+  </style>
+</head>
+<body>
+  <h1>Would you want to be my girlfriend? 😁</h1>
+
+  <div class="buttons">
+    <button id="yes-btn">Yes 😁</button>
+  </div>
+
+  <!-- No button outside the flex container -->
+  <button id="no-btn">No 😔</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    emailjs.init("yaLJ0jm51ft2ua_nq"); // Public key
+
+    const yesBtn = document.getElementById('yes-btn');
+    const noBtn = document.getElementById('no-btn');
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
+    // Position No button next to Yes button on load
+    window.addEventListener('load', () => {
+      const yesRect = yesBtn.getBoundingClientRect();
+      noBtn.style.left = (yesRect.right + 10) + "px";
+      noBtn.style.top = yesRect.top + "px";
+    });
+
+    // Move No button randomly on hover (desktop only)
+    noBtn.addEventListener('mouseenter', () => {
+      if (isMobile) return;
+
+      const btnWidth = noBtn.offsetWidth;
+      const btnHeight = noBtn.offsetHeight;
+
+      const maxX = window.innerWidth - btnWidth - 10;
+      const maxY = window.innerHeight - btnHeight - 10;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noBtn.style.left = `${Math.max(10, x)}px`;
+      noBtn.style.top = `${Math.max(10, y)}px`;
+    });
+
+    // Yes button click
+    yesBtn.addEventListener('click', () => {
+      const startTime = Date.now();
+      const counterLink = `counter.html?start=${startTime}`;
+
+      // Email to Adele
+      const templateParams = {
+        from_name: "Sofia ❤️",
+        to_email: "sofiamcm.school@gmail.com",
+        counter_link: counterLink
+      };
+      emailjs.send("service_ypmsyb1", "template_wih9k7b", templateParams)
+        .then(() => console.log("Email sent to Adele!"))
+        .catch((err) => console.error("Error sending email to Adele:", err));
+
+      // Email to you
+      const myTemplateParams = {
+        from_name: "Sofia ❤️",
+        to_email: "sofiamoura08@icloud.com",
+        counter_link: counterLink
+      };
+      emailjs.send("service_ypmsyb1", "template_wih9k7b", myTemplateParams)
+        .then(() => {
+          console.log("Email sent to Sofia!");
+          window.location.href = counterLink;
+        })
+        .catch((err) => {
+          console.error("Error sending email to Sofia:", err);
+          window.location.href = counterLink;
+        });
+    });
+  </script>
+</body>
+</html>
