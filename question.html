@@ -104,10 +104,12 @@
 
     // Yes button click
     yesBtn.addEventListener('click', () => {
-      const startTime = Date.now();
-      const counterLink = `https://soffmcm.github.io/Counter-web/counter.html?start=${startTime}`;
-
-      // Email to Adele
+    const startTime = Date.now();
+    const counterLink = `https://soffmcm.github.io/Counter-web/counter.html?start=${startTime}`;
+    
+    console.log("Counter link generated:", counterLink);
+    
+    // Email to Adele
       const templateParams = {
         from_name: "Sofia ❤️",
         to_email: "sofiamcm.school@gmail.com",
@@ -136,4 +138,3 @@
   </script>
 </body>
 </html>
-
