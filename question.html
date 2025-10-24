@@ -103,19 +103,17 @@
     });
 
     // Yes button click
-    yesBtn.addEventListener('click', () => {
-    const startTime = Date.now();
-    const counterLink = `https://soffmcm.github.io/Counter-web/counter.html?start=${startTime}`;
-    
-    console.log("Counter link generated:", counterLink);
-    
-    // Email to Adele
+    yesBtn.addEventListener('click', async () => {
+      const startTime = Date.now();
+      const counterLink = `https://soffmcm.github.io/Counter-web/counter.html?start=${startTime}`;
+
+      // Email to Adele
       const templateParams = {
         from_name: "Sofia ❤️",
         to_email: "sofiamcm.school@gmail.com",
         counter_link: counterLink
       };
-      emailjs.send("service_ypmsyb1", "template_wih9k7b", templateParams)
+      await emailjs.send("service_ypmsyb1", "template_wih9k7b", templateParams)
         .then(() => console.log("Email sent to Adele!"))
         .catch((err) => console.error("Error sending email to Adele:", err));
 
@@ -125,18 +123,19 @@
         to_email: "sofiamoura08@icloud.com",
         counter_link: counterLink
       };
-      emailjs.send("service_ypmsyb1", "template_wih9k7b", myTemplateParams)
-        .then(() => {
-          console.log("Email sent to Sofia!");
-          window.location.href = counterLink;
-        })
-        .catch((err) => {
-          console.error("Error sending email to Sofia:", err);
-          window.location.href = counterLink;
-        });
+      await emailjs.send("service_ypmsyb1", "template_wih9k7b", myTemplateParams)
+        .then(() => console.log("Email sent to Sofia!"))
+        .catch((err) => console.error("Error sending email to Sofia:", err));
+
+      // 💌 Cute popup
+      alert("Check your email :)❤️");
+
+      // Redirect
+      window.location.href = counterLink;
     });
   </script>
 </body>
 </html>
+
 
 
