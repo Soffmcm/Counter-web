@@ -1,2 +1,2 @@
 # Counter-web
-This should be showing a count up of how long me and her have been together
+This is a website i made to ask her to be my gf, it also has a page that will serve as a counter for how long we've been together since she clicked "yes"
